@@ -12,4 +12,4 @@ Contributeurs :
 
 Ont cloné :
   Sarah
-
+  Augustin
