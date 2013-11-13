@@ -13,3 +13,7 @@ git commit -m "message de commit"
 
 Synchroniser avec la version en ligne
 git push https://github.com/aborsu985/Groupe5.git
+
+
+Plus d'infos :
+http://rogerdudler.github.io/git-guide/
