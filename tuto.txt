@@ -12,4 +12,4 @@ Creer une contribution avec ces modifications
 git commit -m "message de commit"
 
 Synchroniser avec la version en ligne
-git pull https://github.com/aborsu985/Groupe5.git
+git push https://github.com/aborsu985/Groupe5.git
