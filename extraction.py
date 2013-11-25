@@ -8,6 +8,7 @@ class Tree() :
         self.parent = None
         self.axiome = False
         self.label = name
+        self.word = name
         self.lexique = lex
         self.subtrees = []
         
@@ -30,10 +31,41 @@ class PCFG() :
     
     def __init__ (self) :
         self.non_term = set()
-        self.regles = { }           # LH : RH : proba
-        self.lexique_train = { }    # mot : cat : proba
-        self.lexique_externe = { }  # mot : cat
-        self.lexique_test = { }     # mot : cat
+        self.regles = defaultdict(lambda : defaultdict(float))                  # LH : RH : proba
+        self.lexique_train = defaultdict(lambda : defaultdict(float))           # mot : cat : proba
+        #self.lexique_externe = { }  # mot : cat
+        #self.lexique_test = { }     # mot : cat
+        
+    def makerule(self,tree):
+        if len(tree.subtrees) == 1 and tree.subtrees[0].lexique :
+            mot = tree.subtrees[0].word
+            # Noeud parent d'un lexical
+            self.lexique_train[mot][tree.word] += 1.
+        else:
+            RH = " ".join(son.word for son in tree.subtrees)
+            self.regles[tree.word][RH] += 1.
+            for son in tree.subtrees :
+                self.makerule(son)
+        
+    def extract_grammar(self,forest):
+        for tree in forest:
+            self.makerule(tree)
+        
+        for LHS in self.regles :
+            occ = sum(self.regles[LHS][RHS] for RHS in self.regles[LHS])
+            for RHS in self.regles[LHS] :
+                self.regles[LHS][RHS] /= occ
+        
+        lst = []
+        for LH in self.regles :
+            for RH in self.regles[LH] :
+                lst.append(self.regles[LH][RH])
+        
+        lst.sort()
+        print(sum(lst) / len(lst))
+        print(lst[:30])
+        
+        #print(self.regles["VN"]["CLO VINF"])
 
 def extract(phrase) :
     #( (SENT (VN (CLS Nous) (V prions)) (NP (DET les) (NC cinéastes) (COORD (CC et) (NP (ADJ tous) (DET nos) (NC lecteurs)))) (PP (P de) (VPinf (ADV bien) (VN (VINF vouloir)) (VPinf (VN (CLO nous) (CLO en) (VINF excuser))))) (PONCT .)))
@@ -56,6 +88,7 @@ def extract(phrase) :
     traitable = phrase.split(" ")
     axiome = None
     pile = []
+    first_lexical = True
     
     for item in traitable:
         label = item.strip("()")
@@ -69,6 +102,10 @@ def extract(phrase) :
                 node.axiome = True
             else:
                 parent = pile[-1]
+                # On demajuscule les premiers mots de phrase non entites nommées du ftb.
+                if first_lexical and lexical and parent != "NPP":
+                    first_lexical = False
+                    node.word = label[0].lower()+label[1:]
             node.parent = parent
             if parent:
                 parent.subtrees.append(node)
@@ -109,5 +146,7 @@ if __name__ == "__main__" :
     #print(result)
     
     ftb_trees = compile_trees("ftb6_2.mrg")
-    print("\n".join(str(x) for x in ftb_trees[:6]))
+    grammar = PCFG()
+    grammar.extract_grammar(ftb_trees)
+    #print("\n".join(str(x) for x in ftb_trees[:6]))
         
