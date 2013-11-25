@@ -32,7 +32,8 @@ class PCFG() :
     def __init__ (self) :
         self.non_term = set()
         self.regles = defaultdict(lambda : defaultdict(float))                  # LH : RH : proba
-        self.lexique_train = defaultdict(lambda : defaultdict(float))           # mot : cat : proba
+        self.regles_lex = defaultdict(lambda : defaultdict(float))           # cat : mot : proba
+        ##### INUTILE #########self.lexique_train = defaultdict(lambda : defaultdict(float))           # mot : cat : proba
         #self.lexique_externe = { }  # mot : cat
         #self.lexique_test = { }     # mot : cat
         
@@ -40,7 +41,7 @@ class PCFG() :
         if len(tree.subtrees) == 1 and tree.subtrees[0].lexique :
             mot = tree.subtrees[0].word
             # Noeud parent d'un lexical
-            self.lexique_train[mot][tree.word] += 1.
+            self.regles_lex[tree.word][mot] += 1.
         else:
             RH = " ".join(son.word for son in tree.subtrees)
             self.regles[tree.word][RH] += 1.
@@ -48,25 +49,42 @@ class PCFG() :
                 self.makerule(son)
         
     def extract_grammar(self,forest):
+        def probabilise_counts(dico):
+            for lev1 in dico:
+                occ = sum(dico[lev1][lev2] for lev2 in dico[lev1])
+                for lev2 in dico[lev1]:
+                    dico[lev1][lev2] /= occ
+                
         for tree in forest:
             self.makerule(tree)
         
-        for LHS in self.regles :
-            occ = sum(self.regles[LHS][RHS] for RHS in self.regles[LHS])
-            for RHS in self.regles[LHS] :
-                self.regles[LHS][RHS] /= occ
+        probabilise_counts(self.regles)
+        probabilise_counts(self.regles_lex)
         
-        lst = []
-        for LH in self.regles :
-            for RH in self.regles[LH] :
-                lst.append(self.regles[LH][RH])
+        ####### INUTILE
+        ## self.regles_lex : cat -> word -> proba
+        #for cat in self.regles_lex :
+            #for word in self.regles_lex[cat]
+                #self.lexique_train[word][cat] = self.regles_lex[cat][word]
+    
+    def _export(self, dico, form_str, outname) :
+        outstream = open(outname, "w", encoding = "utf8")
+        for level1 in dico :
+            for level2 in dico[level1] :
+                outstream.write(form_str(level1, level2, dico[level1][level2]))
+        outstream.close()
         
-        lst.sort()
-        print(sum(lst) / len(lst))
-        print(lst[:30])
-        
-        #print(self.regles["VN"]["CLO VINF"])
+    
+    def export_grammar(self, filename = "ftb_grammar.txt") :
+        form_str = lambda x,y,z : "<" + x + "> = <" + y.replace(" ", "> <") + "> ; " + str(z) + "\n"
+        # <SENT> = <NP> <PONCT> <VPinf> <PONCT> <VN> <PP> <NP> <PONCT> ; 0.00025239777889954568
+        self._export(self.regles, form_str, filename)
 
+    def export_lexicon(self, filename = "ftb_lexicon.txt") :
+        # "qui"	'prowh'	0.08064516129032257841
+        form_str = lambda y, x, z : '"' + x + """"\t'""" + y + "'\t" +str(z) + '\n'
+        self._export(self.regles_lex, form_str, filename)
+        
 def extract(phrase) :
     #( (SENT (VN (CLS Nous) (V prions)) (NP (DET les) (NC cinéastes) (COORD (CC et) (NP (ADJ tous) (DET nos) (NC lecteurs)))) (PP (P de) (VPinf (ADV bien) (VN (VINF vouloir)) (VPinf (VN (CLO nous) (CLO en) (VINF excuser))))) (PONCT .)))
     # (SENT (NP les_etudiants))
@@ -148,5 +166,6 @@ if __name__ == "__main__" :
     ftb_trees = compile_trees("ftb6_2.mrg")
     grammar = PCFG()
     grammar.extract_grammar(ftb_trees)
-    #print("\n".join(str(x) for x in ftb_trees[:6]))
+    grammar.export_lexicon()
+    grammar.export_grammar()
         
