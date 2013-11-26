@@ -84,6 +84,56 @@ class PCFG() :
         # "qui"	'prowh'	0.08064516129032257841
         form_str = lambda y, x, z : '"' + x + """"\t'""" + y + "'\t" +str(z) + '\n'
         self._export(self.regles_lex, form_str, filename)
+
+    def binarise(self):
+        for LEFT in self.regles.copy().keys():
+            for RIGHT in self.regles[LEFT].copy().keys():
+                if len(RIGHT.split( )) == 1:
+
+                    #Ajoute une rêgle non terminale A:B
+                    nouvelle_regle = ":".join([LEFT,RIGHT])
+                    p1 = self.regles[LEFT][RIGHT]
+
+                    #Retire la règle originelle
+                    del self.regles[LEFT][RIGHT]
+
+                    #Modifie la grammaire
+                    for temp_left in self.regles.copy().keys():
+                        #Pour toute production de A
+                        if temp_left == LEFT:
+                            #Augmente la probabilité pour compenser la supression de A -> B
+                            for temp_right in self.regles[temp_left]:
+                                self.regles[temp_left][temp_right] /= (1- p1)
+                            continue
+                        #Pour toute production de B
+                        elif temp_left == RIGHT:
+                            for temp_right in self.regles[temp_left]:
+                                if LEFT in temp_right: print("erreur, ",LEFT,"est réécris par ",RIGHT,"dans la rêgle : ",temp_left,' -> ', temp_right ," : ",self.regles[temp_left][temp_right])
+                                #Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
+                                self.regles[nouvelle_regle][temp_right]=self.regles[temp_left][temp_right]
+
+                        #Pour toutes les autres rêgles de productions C
+                        for temp_right in self.regles[temp_left].copy().keys():
+                            #Qui contiennent la rêgle A dans leur réécriture.C -x A y
+                            if LEFT in temp_right.split( ):
+                                #Crée une nouvelle rêgle se réécrivant C -> x A:B y
+                                self.regles[temp_left][" ".join([nouvelle_regle if x==LEFT else x for x in temp_right.split( )])] = p1 * self.regles[temp_left][temp_right]
+                                #Modifie les probabilités des rêgles contenant A pour en retirer la possibilité de A -> B
+                                self.regles[temp_left][temp_right] *= (1-p1)
+
+        for LEFT in self.regles.copy().keys():
+            for RIGHT in self.regles[LEFT].keys():
+                if len(RIGHT.split( )) > 2:
+                    A = RIGHT.split( )
+                    B = A.pop(len(A)-1)
+                    nouveau = "-".join(A)
+                    self.regles[LEFT][" ".join([nouveau,B])] = self.regles[LEFT].pop(RIGHT)
+                    while len(A) > 1:
+                        B = A.pop(len(A)-1)
+                        nouveau2 = "-".join(A)
+                        self.regles[nouveau] = { " ".join([nouveau2,B]): 1 }
+                        nouveau = nouveau2
+
         
 def extract(phrase) :
     #( (SENT (VN (CLS Nous) (V prions)) (NP (DET les) (NC cinéastes) (COORD (CC et) (NP (ADJ tous) (DET nos) (NC lecteurs)))) (PP (P de) (VPinf (ADV bien) (VN (VINF vouloir)) (VPinf (VN (CLO nous) (CLO en) (VINF excuser))))) (PONCT .)))

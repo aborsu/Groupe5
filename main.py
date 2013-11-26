@@ -1,16 +1,16 @@
 # -*-coding:UTF8-*-
 
-print "Test"
+print("Test")
 
 REGLE = {'S': {'NP VP': 1}, 'VP' : {'V' : 0.25 , 'V Adv' : 0.25 , 'V NP Adv' : 0.25 , 'V S' : 0.25 },'NP' : { 'Det Adj' : 0.25 , 'Det Adj N' : 0.25, 'Det Adj N N' : 0.25 , 'N' : 0.25 } }
-print "Grammaire"
+print("Grammaire")
 for key in REGLE:
 	for key2 in REGLE[key]:
-		print key,' -> ', key2 ," : ",REGLE[key][key2]
+		print(key,' -> ', key2 ," : ",REGLE[key][key2])
 
 
-for LEFT in REGLE.keys():
-	for RIGHT in REGLE[LEFT].keys():
+for LEFT in REGLE.copy().keys():
+	for RIGHT in REGLE[LEFT].copy().keys():
 		if len(RIGHT.split( )) == 1:
 
 			#Ajoute une rêgle non terminale A:B
@@ -34,12 +34,12 @@ for LEFT in REGLE.keys():
 				#Pour toute production de B
 				elif temp_left == RIGHT:
 					for temp_right in REGLE[temp_left]:
-						if LEFT in temp_right: print "erreur, ",LEFT,"est réécris par ",RIGHT
+						if LEFT in temp_right: print("erreur, ",LEFT,"est réécris par ",RIGHT)
 						#Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
 						REGLE[nouvelle_regle][temp_right]=REGLE[temp_left][temp_right]
 
 				#Pour toutes les autres rêgles de productions C
-				for temp_right in REGLE[temp_left].keys():
+				for temp_right in REGLE[temp_left].copy().keys():
 					#Qui contiennent la rêgle A dans leur réécriture.C -x A y
 					if LEFT in temp_right.split( ):
 						#Crée une nouvelle rêgle se réécrivant C -> x A:B y
@@ -48,7 +48,7 @@ for LEFT in REGLE.keys():
 						REGLE[temp_left][temp_right] *= (1-p1)
 
 
-for LEFT in REGLE.keys():
+for LEFT in REGLE.copy().keys():
 	for RIGHT in REGLE[LEFT].keys():
 		if len(RIGHT.split( )) > 2:
 			A = RIGHT.split( )
@@ -62,11 +62,11 @@ for LEFT in REGLE.keys():
 				nouveau = nouveau2
 
 
-print "Grammaire modifiée"
-print REGLE
+print("Grammaire modifiée")
+print(REGLE)
 for key in REGLE:
 	for key2 in REGLE[key]:
-		print key,' -> ', key2 ," : ",REGLE[key][key2]
+		print(key,' -> ', key2 ," : ",REGLE[key][key2])
 
 
 
