@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
+from re import split as resplit
+
+CATLIST = set(("ADJ", "ADV","NC","V","VINF","VPP"))
+NUMS = set(("un","deux","trois","quatre","cinq","six","sept","huit","neuf",
+        "dix","onze","douze","treize","quatorze","quinze","seize",
+        "vingt","trente","quarante","cinquante","soixante",
+        "cent","mille","millions","milliards","billions"))
+EXCEPT_NUM = set(("un",))
 
 class Tree() :
     def __init__(self,name,lex) :
@@ -34,9 +42,6 @@ class PCFG() :
         self.term = set()
         self.regles = defaultdict(lambda : defaultdict(float))                  # LH : RH : proba
         self.regles_lex = defaultdict(lambda : defaultdict(float))           # cat : mot : proba
-        ##### INUTILE #########self.lexique_train = defaultdict(lambda : defaultdict(float))           # mot : cat : proba
-        #self.lexique_externe = { }  # mot : cat
-        #self.lexique_test = { }     # mot : cat
         
     def makerule(self,tree):
         if len(tree.subtrees) == 1 and tree.subtrees[0].lexique :
@@ -60,16 +65,35 @@ class PCFG() :
                 
         for tree in forest:
             self.makerule(tree)
+
+        # mot: cat : compte
+        lex_train = defaultdict(lambda : defaultdict(float))
+        for cat in self.regles_lex :
+            for word in self.regles_lex[cat]
+                lex_train[word][cat] = self.regles_lex[cat][word]
+                
+        # s'occuper du lexique
+        self.add_external_lexion(["lefff_5000.ftb4tags","lexique_cmpnd_TP.txt"],lex_train)
+        self.add_unambiguous_lex()
         
         probabilise_counts(self.regles)
         probabilise_counts(self.regles_lex)
-        
-        ####### INUTILE
-        ## self.regles_lex : cat -> word -> proba
-        #for cat in self.regles_lex :
-            #for word in self.regles_lex[cat]
-                #self.lexique_train[word][cat] = self.regles_lex[cat][word]
-    
+
+    def add_unambiguous_lex():
+        for cat in CATLIST:
+            self.regles_lex["__"+cat][cat] = 1
+            
+    def add_external_lexicon(lexiques,lex_train):
+        for lexique in lexiques:
+            instream = open(lexique,"r",encoging="utf8")
+            for line in instream:
+                if not line.isspace():
+                    items = line.split("\t")
+                    word,cat = items[0:2]
+                    word.replace(" ","_")
+                    if (word in lex_train and cat not in lex_train[word]) or not word in lex_train:
+                        self.regles_lex[cat][word] = 1
+                    
     def _export(self, dico, form_str, outname) :
         outstream = open(outname, "w", encoding = "utf8")
         for level1 in dico :
@@ -177,10 +201,13 @@ def extract(phrase) :
                 node.axiome = True
             else:
                 parent = pile[-1]
+                # ===========  Normalisation du label/word  ==================
                 # On demajuscule les premiers mots de phrase non entites nommées du ftb.
                 if first_lexical and lexical and parent != "NPP":
                     first_lexical = False
                     node.word = label[0].lower()+label[1:]
+                if label.isnumeric() or isnumword(label) :
+                    node.word = "_Num"     # DEMANDER A GROUPE1
             node.parent = parent
             if parent:
                 parent.subtrees.append(node)
@@ -198,7 +225,15 @@ def extract(phrase) :
     assert str(axiome)==phrase, "ECHEC DE L'ANALYSE !"
     return axiome
             
-    
+def isnumword(word):
+    splitted_words = resplit('[ \-_]',word)
+    if len(splitted_words) == 1 and splitte_words[0] in EXCEPT_NUM:
+        return False
+    for word in splitted_words:
+        if word not in NUM:
+            return False
+    return True
+        
 def compile_trees(filename) :
     instream = open("ftb6_2.mrg", "r", encoding = "utf8")
     phrase = instream.readline()
