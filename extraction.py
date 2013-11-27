@@ -86,48 +86,52 @@ class PCFG() :
         self._export(self.regles_lex, form_str, filename)
 
     def binarise(self):
-        for LEFT in self.regles.copy().keys():
-            for RIGHT in self.regles[LEFT].copy().keys():
-                if len(RIGHT.split( )) == 1:
+        for head in self.regles.copy().keys():
+            for rule in self.regles[head].copy().keys():
+                if len(rule.split( )) == 1:
 
                     #Ajoute une rêgle non terminale A:B
-                    nouvelle_regle = ":".join([LEFT,RIGHT])
-                    p1 = self.regles[LEFT][RIGHT]
+                    new_rule = ":".join([head,rule])
+                    p1 = self.regles[head][rule]
 
                     #Retire la règle originelle
-                    del self.regles[LEFT][RIGHT]
+                    del self.regles[head][rule]
 
                     #Modifie la grammaire
-                    for temp_left in self.regles.copy().keys():
+                    for temp_left in self.regles:
                         #Pour toute production de A
-                        if temp_left == LEFT:
+                        if temp_left == head:
                             #Augmente la probabilité pour compenser la supression de A -> B
                             for temp_right in self.regles[temp_left]:
                                 self.regles[temp_left][temp_right] /= (1- p1)
                             continue
+                    
+                    for temp_left in self.regles.copy().keys():
                         #Pour toute production de B
-                        elif temp_left == RIGHT:
+                        if temp_left == rule:
                             for temp_right in self.regles[temp_left]:
-                                if LEFT in temp_right: print("erreur, ",LEFT,"est réécris par ",RIGHT,"dans la rêgle : ",temp_left,' -> ', temp_right ," : ",self.regles[temp_left][temp_right])
+                                if head in temp_right: print("erreur, ",head,"est réécris par ",rule)
                                 #Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
-                                self.regles[nouvelle_regle][temp_right]=self.regles[temp_left][temp_right]
+                                self.regles[new_rule][temp_right]=self.regles[temp_left][temp_right]
 
+                    for temp_left in self.regles:
+                        print("Je suis ici !")
                         #Pour toutes les autres rêgles de productions C
                         for temp_right in self.regles[temp_left].copy().keys():
                             #Qui contiennent la rêgle A dans leur réécriture.C -x A y
-                            if LEFT in temp_right.split( ):
+                            if head in temp_right.split( ):
                                 #Crée une nouvelle rêgle se réécrivant C -> x A:B y
-                                self.regles[temp_left][" ".join([nouvelle_regle if x==LEFT else x for x in temp_right.split( )])] = p1 * self.regles[temp_left][temp_right]
+                                self.regles[temp_left][" ".join([new_rule if x==head else x for x in temp_right.split( )])] = p1 * self.regles[temp_left][temp_right]
                                 #Modifie les probabilités des rêgles contenant A pour en retirer la possibilité de A -> B
                                 self.regles[temp_left][temp_right] *= (1-p1)
 
-        for LEFT in self.regles.copy().keys():
-            for RIGHT in self.regles[LEFT].keys():
-                if len(RIGHT.split( )) > 2:
-                    A = RIGHT.split( )
+        for head in self.regles.copy().keys():
+            for rule in self.regles[head].keys():
+                if len(rule.split( )) > 2:
+                    A = rule.split( )
                     B = A.pop(len(A)-1)
                     nouveau = "-".join(A)
-                    self.regles[LEFT][" ".join([nouveau,B])] = self.regles[LEFT].pop(RIGHT)
+                    self.regles[head][" ".join([nouveau,B])] = self.regles[head].pop(rule)
                     while len(A) > 1:
                         B = A.pop(len(A)-1)
                         nouveau2 = "-".join(A)
@@ -218,4 +222,6 @@ if __name__ == "__main__" :
     grammar.extract_grammar(ftb_trees)
     grammar.export_lexicon()
     grammar.export_grammar()
+    grammar.binarise()
+    grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
         
