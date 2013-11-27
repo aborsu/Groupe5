@@ -22,19 +22,13 @@ Idee:
         virer toutes les règles qui réécrivent LH avec une proba < m * un petit nombre.
 
 TODO
-  - composés
-    de le
-  - Finir la binarisation
-  - Suppression des règles inutiles
-  - Faire le tour des groupes, définir le format de tout et modifier dans ftb.  
-      quelles CAT ? mapping eux : ftb
-      remplacement des entités nommées.
-      eventuellement fournir aux autres groupes un fichier texte ftb, être capable d'en refaire un fichier arboré d'origine.
-      -G1: tokenisation
-      -G2: Analyse morpho des inconnus
-      -G3: Identification des formes, correction ortho
-      -G4: Entités nommées.
-  - Brancher avec le parseur
+  X Finir la binarisation
+  X Mail aux groupes
+  - Creer input pour groupe 4
+  X Installer parseur
+  - Brancher avec parseur:
+    * Mail Sagot
+  - Train/test
   - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
 
    {....1}token1 {....2}token2

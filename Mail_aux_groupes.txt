@@ -1,11 +1,10 @@
-      -G1: tokenisation
-      -G2: Analyse morpho des inconnus
-      -G3: Identification des formes, correction ortho
-      -G4: Entités nommées.
 
+  Nous ne sommes pas sur de poser les bonnes questions aux bons groupes, pouvez-vous toutes les lire et répondre si vous estimez que cela vous concerne ?
+
+  
   Question générale pour tous les groupes:
     A quoi ressemble, aussi précisément que possible, votre output ? Qu'y a-t-il entre les accolades, et à quoi ressemblent les cas particuliers ?
-
+    
   Tokenisation:
       - A quoi ressemble votre output ? Que faites-vous de la ponctuation ?
 
@@ -48,4 +47,7 @@
 
     Entités nommées
         - A quoi ressemble votre input ? Accepteriez-vous de faire tourner votre programme sur notre corpus d'entraînement préparé par nos soins pour ressembler à votre input normal ?
-        
+        - Un chiffre comme "quatre-vingt deux" est-il une entité nommés ?
+
+
+    Merci beaucoup ! Nous sommes là si vous avez des questions sur notre travail !
