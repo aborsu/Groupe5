@@ -91,7 +91,7 @@ class PCFG() :
     def binarise(self):
         for head in self.regles.copy().keys():
             for rule in self.regles[head].copy().keys():
-                if len(rule.split( )) == 1:
+                if len(rule.split( )) == 1 and rule not in self.term:
 
                     #Ajoute une rêgle non terminale A:B
                     new_rule = ":".join([head,rule])
