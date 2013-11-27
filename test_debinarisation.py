@@ -3,12 +3,16 @@
 
 from extraction import *
 
-phrase = "( (S (NP:N:Prout Pierre) (VP:V mange)))"
-tree = extract(phrase)
-print(tree)
-print('Debinarise')
-debinarise(tree)
-print(tree)
+phrases = ["( (S (NP:N:Prout Pierre) (VP:V mange)))",
+    "( (S (NP:N:Prout Pierre) (VP (V-NP-Adj (V-NP (V broute) (NP Marie)) (Adj adroite)) (Adv délicatement))))",
+    "( (S (NP:N:Prout Pierre) (VP (V-NP-Adj:N (V-NP (V broute) (NP Marie)) (Adj:N adroite)) (Adv:T délicatement))))"]
+
+for phrase in phrases:
+    tree = extract(phrase)
+    print(tree)
+    print('Debinarise')
+    debinarise(tree)
+    print(tree)
 
 
 # output:

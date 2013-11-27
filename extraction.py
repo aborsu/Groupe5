@@ -211,43 +211,67 @@ def compile_trees(filename) :
             phrase = instream.readline()
     return ftb_trees
 
-def debinarise(axiome):
-    #print(axiome)
-    for i,tree in enumerate(axiome.subtrees.copy()):
-        if ":" in tree.label:
-            liste = tree.label.split(":")
-            parent = tree.parent
-            subtrees = tree.subtrees
-            a = liste[0]
-            liste = liste[1:]
-            tree_temp = tree
-            #print(axiome)
-            new_tree = Tree(a,False)
-            #print(axiome)
-            while len(liste)>0:    
-                new_tree.parent = parent
+def debinarise(maintree):
+    """
+    Prend une phrase sous forme d'arbre binaire et applatis l'arbre (arbre n-aire).
+    """
+
+    def get_subtrees(tree,x):
+        """
+        Permet d'obtenir l'ensemble des noeuds qu'il faut applatir lorsqu'un noeud combiné est détecté.
+        tree est le noeud dans lequel il faut aller chercher les sous-noeud à applatir.
+        x = nombre de noeud qui ont été combinés.
+        """
+        liste = tree.subtrees #Liste des soud noeuds du noeud (Toujours 2 puisque l'arbre est binaire.)
+        list_of_subtrees.insert(0,liste[1]) #Le deuxième noeud est récupéré et envoyé dans la liste de réponse
+        if x>2:
+            get_subtrees(liste[0],x-1)      #S'il reste plus de deux noeuds à récupérer, on regarde à l'intérieur du premier noeud pour 1 noeud de moins.
+        else:
+            list_of_subtrees.insert(0,liste[0]) #Sinon on prend le premier des deux noeuds et on l'envoye en première position de la liste de réponses.
+        pass
+    
+    #pour chaque 
+    for i,tree in enumerate(maintree.subtrees):
+        if tree.lexique: #Si on trouve un noeud lexique on passe.
+            continue
+
+        elif "-" in tree.label:                             #Si on trouve un noeud composé
+            list_of_subtrees = []                           #initialise une liste de sous-noeuds
+            get_subtrees(tree,len(tree.label.split("-")))   #Remplis la liste de sous-noeuds d'autants de noeuds qu'il y a de labels dans le noeud composé.
+            for j,subtree in enumerate(list_of_subtrees):   #Pour chacun des nouvaux noeuds
+                subtree.parent=maintree                     #On modifie son parent pour qu'il soit le noeud au dessus du noeud composé.
+                if j == 0:                                  #Si il s'ajit du premier noeud, 
+                    maintree.subtrees[i] = subtree          #on remplace le noeud composé
+                else:                                       #Sinon
+                    maintree.subtrees.insert(i+j,subtree)   #On insère le noeud à la place
+        
+        #Si jamais le noeud est un noeud combiné
+        elif ":" in tree.label:
+            liste = tree.label.split(":")   #Split le noeud
+            
+            parent = tree.parent                    #initialise la valeur parent
+            new_tree = Tree(liste.pop(0),False)     #crée un nouveau noeud avec comme nom le premier élément de la liste et enlève l'élément de la liste.
+            
+            while len(liste)>0:                     #Tant qu'il reste des élément dans la liste (SI le noeud en combine plus de deux)
+                new_tree.parent = parent            #Assigne à un noeud son parent
                 if parent == tree.parent:
-                    axiome.subtrees[i] = new_tree
-                    print(axiome)
-                    #print("Hyper important",parent)
-
+                    parent.subtrees[i] = new_tree   #S'il s'agit du premier noeud, modifie le noeud 'tree' pour qu'il pointe mainenant vers le nouveau noeud mais garde l'ordre
                 else:
-                    parent.subtrees = [new_tree]
-                a = liste[0]
-                liste = liste[1:]
-                parent = new_tree
-                tree_temp = new_tree
-                new_tree = Tree(a,False)
-            new_tree.parent = parent
-            parent.subtrees = new_tree
-            new_tree.subtrees = subtrees
-
-        elif tree.lexique == False :
-            for sub_tree in tree.subtrees:
-                debinarise(sub_tree)
-
-        #print('ICI ',tree)
-    #print(axiome)
+                    parent.subtrees = [new_tree]    #S'il ne s'agit pas du premier noeud créé, alors le nouveau noeud est le seur fils de son parent.
+                
+                parent = new_tree                   #Le nouveau noeud sera le parent du suivant
+                new_tree = Tree(liste.pop(0),False) #Crée le noeud suivant dans la liste et l'enlève du même coup.
+            
+            new_tree.parent = parent                #Si la liste est vide, le parent est le noeud précédent.
+            new_tree.subtrees = tree.subtrees       #
+            parent.subtrees = [new_tree]
+            
+            #Récursivité
+            for subtree in parent.subtrees:
+                debinarise(subtree)
+        
+        else:
+            debinarise(tree)
 
 
 
