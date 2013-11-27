@@ -31,6 +31,7 @@ class PCFG() :
     
     def __init__ (self) :
         self.non_term = set()
+        self.term = set()
         self.regles = defaultdict(lambda : defaultdict(float))                  # LH : RH : proba
         self.regles_lex = defaultdict(lambda : defaultdict(float))           # cat : mot : proba
         ##### INUTILE #########self.lexique_train = defaultdict(lambda : defaultdict(float))           # mot : cat : proba
@@ -42,7 +43,9 @@ class PCFG() :
             mot = tree.subtrees[0].word
             # Noeud parent d'un lexical
             self.regles_lex[tree.word][mot] += 1.
+            self.term.add(tree.word)
         else:
+            self.non_term.add(tree.word)
             RH = " ".join(son.word for son in tree.subtrees)
             self.regles[tree.word][RH] += 1.
             for son in tree.subtrees :
