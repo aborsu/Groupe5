@@ -209,6 +209,46 @@ def compile_trees(filename) :
             phrase = instream.readline()
     return ftb_trees
 
+def debinarise(axiome):
+    #print(axiome)
+    for i,tree in enumerate(axiome.subtrees.copy()):
+        if ":" in tree.label:
+            liste = tree.label.split(":")
+            parent = tree.parent
+            subtrees = tree.subtrees
+            a = liste[0]
+            liste = liste[1:]
+            tree_temp = tree
+            #print(axiome)
+            new_tree = Tree(a,False)
+            #print(axiome)
+            while len(liste)>0:    
+                new_tree.parent = parent
+                if parent == tree.parent:
+                    axiome.subtrees[i] = new_tree
+                    print(axiome)
+                    #print("Hyper important",parent)
+
+                else:
+                    parent.subtrees = [new_tree]
+                a = liste[0]
+                liste = liste[1:]
+                parent = new_tree
+                tree_temp = new_tree
+                new_tree = Tree(a,False)
+            new_tree.parent = parent
+            parent.subtrees = new_tree
+            new_tree.subtrees = subtrees
+
+        elif tree.lexique == False :
+            for sub_tree in tree.subtrees:
+                debinarise(sub_tree)
+
+        #print('ICI ',tree)
+    #print(axiome)
+
+
+
 
 if __name__ == "__main__" :
     
@@ -228,6 +268,9 @@ if __name__ == "__main__" :
         
 
     result_trees = compile_trees("result.txt")
+    for tree in result_trees:
+        debinarise(tree)
+
     # result_trees = [ arbres dans l'ordre du fichier result.txt]
     # Arbre:
     #       noeud axiome
