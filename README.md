@@ -3,44 +3,29 @@ Groupe5
 
 Travail d'analyse syntaxique. Groupe 5
 
-Contributeurs :
+REJETE
+  - Virer les règles de proba trop petites ( ça sert à rien et ça encombre).
+        Pour chaque LH :
+            calculer m = max( P(RH) )
+            virer toutes les règles qui réécrivent LH avec une proba < m * un petit nombre.
 
-  Augustin
-  Sarah
-  Maximin
-
-
-Ont cloné :
-  Sarah
-  Augustin
-
-Idee:
-    Virer les règles de proba trop petites ( ça sert à rien et ça encombre).
-    
-    Pour chaque LH :
-        calculer m = max( P(RH) )
-        virer toutes les règles qui réécrivent LH avec une proba < m * un petit nombre.
-
-TODO
+DONE
   X Finir la binarisation
-  - Débinariser
+  X Débinariser
   X Mail aux groupes
-  - Creer input pour groupe 4
   X Installer parseur
-  - Brancher avec parseur:
-    * Mail Sagot
-        -état de l'avancement
-        -utilisation minimale de SYNTAX : 
-            -format d'entrée de la grammaire
-            -compilation de grammaire probabiliste
-            -formats d'entrée de l'analyse
-            -options utiles éventuellement
-  - Train/test
+  X Train/test
       - train.txt (découpage arboré)
       - test.txt (découpage arboré)
       - test_input.txt (découpage non arboré)
-  - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
+  X Lexiques externes
+  X Donner liste composés au groupe 3
+    cat ftb6_2.mrg |grep -o -P "[^(^)]+ [^)^(]+"|grep -P "_"|tr " " "\t"|awk '{print $2 "\t" $1}' > composes.txt
 
+TODO
+  - Demander entités nommées au groupe 1 (+ _Num)
+  - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
+  
    {....1}token1 {....2}token2
 
    parse: token1 token2
@@ -48,16 +33,43 @@ TODO
    resultat: (token1 (token2))
 
    remet: ({...}token ({...}token))
+  - Modifs sur le ftb:
+    - entités nommées
+  - Brancher avec parseur:
+    X Mail Sagot
+    - Branchement
+  - Optimisation/relecture code
 
-  - stade plus avancé :
-   
-   {....1}token1 {....2}token2
+INFOS GROUPES
+  GROUPE 1
+    - Entités nommées type _URL. Demander précisions.
+    - Format pour _NUM ? DATE ?
+  GROUPE 2
+    - liste de catégories :
+       ADJ
+       ADV
+       NC
+       V
+       VINF
+       VPP
 
-   parse: token1_cat token2_cat
+    - output : {truc}__cat/score
+       avec : cat = catégorie prédite, score = score de confiance (surtout utile pour le groupe 3)
+       exemple : {publicité}publicité__NC/70
 
-   lexique non-ambigu:
-      token1_catx : catx : proba
+    - infos morphologiques associées : aucune :-)
 
-   resultat: (token1 (token2))
+  GROUPE 3
+      1. pour l'output : les accolades sont utilisées quand quelque chose a été modifié, pour nous ça peut être :
+      - {au bout de}au_bout_de      (pas d'espace entre } et le mot)
+      - {au}à {}le 
+      - {au bord du}au_bord_de {}le      (les accolades vides {} réfèrent au dernier token)
+      - {quatre-vingt dix}_NUM      (un seul underscore)      /!\ ça on doit se confirmer avec Slimane, voir ce qu'il fait avec les vrais chiffres genre 878.
 
-   remet: ({...}token ({...}token))
+      2. la ponctuation pour nous c'est un mot du lexique comme un autre, c'est pas inconnu donc on laisse passer tel quel.
+      3. Etiquettent _NUM également les nombres simples en toute lettre: "deux", mais pas "un"
+
+  GROUPE 4
+    - si mot inconnu : {}__CAT ils auront viré un /score
+    - {token_original}_TYPE, avec types in [ORG,PERS,GEO]
+    - Ils nous fournissent leur lexique d'entités nommées pour modifier le ftb
