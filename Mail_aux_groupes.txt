@@ -1,0 +1,51 @@
+      -G1: tokenisation
+      -G2: Analyse morpho des inconnus
+      -G3: Identification des formes, correction ortho
+      -G4: Entités nommées.
+
+  Question générale pour tous les groupes:
+    A quoi ressemble, aussi précisément que possible, votre output ? Qu'y a-t-il entre les accolades, et à quoi ressemblent les cas particuliers ?
+
+  Tokenisation:
+      - A quoi ressemble votre output ? Que faites-vous de la ponctuation ?
+
+  Morphologie :
+      - Quelle est la liste des catégories utilisées ?
+        Pour information, la liste des catégories de notre fichier d'entraînement est:
+            ADJ (adjective)
+            ADJWH
+            ADV (adverb)
+            ADVWH
+            CC (coordinating conjunction)
+            CLO (weak clitic pronoun)
+            CLR (weak clitic pronoun)
+            CLS (weak clitic pronoun)
+            CS (subordinating conjunction)
+            DET (determiner)
+            DETWH
+            ET (foreign word)
+            I (interjection)
+            NC (common noun)
+            NP (proper noun)
+            NPP
+            P (preposition)
+            P+D
+            PONCT (punctuation mark)
+            P+PRO
+            PREF (prefix)
+            PRO (strong pronoun)
+            PROREL
+            PROWH
+            V (verb)
+            VIMP
+            VINF
+            VS
+        - Comment sont notées les informations de morphologie dans votre output ? Quel est le format type d'un token ? Quelles informations morphologique donnez-vous ?
+
+    Identification des formes
+        - A quoi ressemble un composé ? Par quel caractère sont-ils séparés ? A quoi ressemble un chiffre comme "quatre-vingt deux" ?
+        - Quelles informations ont été ajoutées dans les accolades ?
+
+    Entités nommées
+        - A quoi ressemble votre input ? Accepteriez-vous de faire tourner votre programme sur notre corpus d'entraînement préparé par nos soins pour ressembler à votre input normal ?
+        
