@@ -212,9 +212,31 @@ def compile_trees(filename) :
     return ftb_trees
 
 def debinarise(maintree):
+    def get_subtrees(tree,x):
+        liste = tree.subtrees
+        list_of_subtrees.insert(0,liste[1])
+        if x>2:
+            get_subtrees(liste[0],x-1)
+        else:
+            list_of_subtrees.insert(0,liste[0])
+        pass
+
     for i,tree in enumerate(maintree.subtrees):
         if tree.lexique:
             continue
+
+        elif "-" in tree.label:
+            subtrees_remaining = tree.subtrees[i:].copy()
+            print("Subtrees",[tree in subtrees_remaining])
+            labels = tree.label.split("-")
+            list_of_subtrees = []
+            get_subtrees(tree,len(labels))
+            for j,subtree in enumerate(list_of_subtrees):
+                subtree.parent=maintree
+                if j == 0:
+                    maintree.subtrees[i] = subtree
+                else:
+                    maintree.subtrees.insert(i+j,subtree)
         
         #Si jamais le noeud est un noeud combiné
         elif ":" in tree.label:
@@ -240,11 +262,9 @@ def debinarise(maintree):
             #Récursivité
             for subtree in parent.subtrees:
                 debinarise(subtree)
-            
-
+        
         else:
-            for sub_tree in tree.subtrees:
-                debinarise(sub_tree)
+            debinarise(tree)
 
 
 
