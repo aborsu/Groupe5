@@ -228,3 +228,19 @@ if __name__ == "__main__" :
     grammar.binarise()
     grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
         
+
+    result_trees = compile_trees("result.txt")
+    # result_trees = [ arbres dans l'ordre du fichier result.txt]
+    # Arbre:
+    #       noeud axiome
+                #self.parent = None
+                #self.axiome = True
+                #self.label = texte: NP, "pierre"
+                #self.lexique = False
+                #self.subtrees = [ FILS ]
+    # si le label contient "-", faire des machins
+    # NOTE: les arbres sont des structures chaînées
+    # Si tu fais:
+    # fluxout = open(...)
+    # for tree in result_trees
+    #   fluxout.write(str(tree)+\n)

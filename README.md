@@ -23,7 +23,7 @@ Idee:
 
 TODO
   X Finir la binarisation
-        débinariser
+  - Débinariser
   X Mail aux groupes
   - Creer input pour groupe 4
   X Installer parseur
@@ -36,6 +36,9 @@ TODO
             -formats d'entrée de l'analyse
             -options utiles éventuellement
   - Train/test
+      - train.txt (découpage arboré)
+      - test.txt (découpage arboré)
+      - test_input.txt (découpage non arboré)
   - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
 
    {....1}token1 {....2}token2
