@@ -1,0 +1,7 @@
+<SENT> = <NP> <PONCT> <VPinf> <PONCT> <VN> <PP> <NP> <PONCT> ; 0.00025239777889954568
+<PP> = <P> <NP> <VN> <PP> <VPinf> ; 0.00323624595469255679
+<PP> = <P> <NP> <PONCT> ; 0.07119741100323624672
+<PROWH> = "prowh" ; 1.0
+<ADVWH> = "advwh" ; 1.0
+<DET> = "det" ; 1.0
+
