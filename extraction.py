@@ -68,7 +68,7 @@ class PCFG() :
         return outstream
         
     
-    def export_grammar(self, filename = "ftb_grammar.txt") :
+    def export_grammar(self, filename = "ftb.bnf") :
         form_str = lambda x,y,z : "<" + x + "> = <" + y.replace(" ", "> <") + "> ; " + str(z) + "\n"
         # <SENT> = <NP> <PONCT> <VPinf> <PONCT> <VN> <PP> <NP> <PONCT> ; 0.00025239777889954568
         outstream = self._export(self.regles, form_str, filename)
@@ -77,9 +77,9 @@ class PCFG() :
             outstream.write(term_str(term))
         outstream.close()
 
-    def export_lexicon(self, filename = "ftb_lexicon.txt") :
+    def export_lexicon(self, filename = "ftb.lex") :
         # "qui"	'prowh'	0.08064516129032257841
-        form_str = lambda y, x, z : '"' + x + """"\t'""" + y + "'\t" +str(z) + '\n'
+        form_str = lambda y, x, z : '"' + x + """"\t'""" + y.lower() + "'\t" +str(z) + '\n'
         self._export(self.regles_lex, form_str, filename).close()
 
     def binarise(self):
