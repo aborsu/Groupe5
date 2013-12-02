@@ -36,6 +36,7 @@ TODO
   - Modifs sur le ftb:
     - entités nommées groupes 1 & 4
   - Brancher avec parseur:
+    - Réparer l'export
     X Mail Sagot
     - Branchement
     - Evaluation

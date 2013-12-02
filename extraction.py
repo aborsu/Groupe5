@@ -99,18 +99,22 @@ class PCFG() :
         for level1 in dico :
             for level2 in dico[level1] :
                 outstream.write(form_str(level1, level2, dico[level1][level2]))
-        outstream.close()
+        return outstream
         
     
     def export_grammar(self, filename = "ftb_grammar.txt") :
         form_str = lambda x,y,z : "<" + x + "> = <" + y.replace(" ", "> <") + "> ; " + str(z) + "\n"
         # <SENT> = <NP> <PONCT> <VPinf> <PONCT> <VN> <PP> <NP> <PONCT> ; 0.00025239777889954568
-        self._export(self.regles, form_str, filename)
+        oustream = self._export(self.regles, form_str, filename)
+        term_str = lambda x : "<" + x + "> = \"" + x.lower() +"\" ; 1.0\n"
+        for term in self.term :
+            outstream.write(term_str(term))
+        outstream.close()
 
     def export_lexicon(self, filename = "ftb_lexicon.txt") :
         # "qui"	'prowh'	0.08064516129032257841
         form_str = lambda y, x, z : '"' + x + """"\t'""" + y + "'\t" +str(z) + '\n'
-        self._export(self.regles_lex, form_str, filename)
+        self._export(self.regles_lex, form_str, filename).close()
 
     def binarise(self):
         for head in self.regles.copy().keys():
@@ -207,7 +211,7 @@ def extract(phrase) :
                     first_lexical = False
                     node.word = label[0].lower()+label[1:]
                 if label.isnumeric() or isnumword(label) :
-                    node.word = "_Num"     # DEMANDER A GROUPE1
+                    node.word = "_NUM"     # DEMANDER A GROUPE1
             node.parent = parent
             if parent:
                 parent.subtrees.append(node)
