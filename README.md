@@ -44,6 +44,11 @@ TODO
     - Branchement -> Max
     - Evaluation 
   - Optimisation/relecture code
+  
+  - Format : 
+        enlever les probabilités dans l'export du lexique
+        mettre un attribut axiome dans la PCFG
+        mettre les règles de LHS axiom en tête du fichier exporté
 
 INFOS GROUPES
   GROUPE 1
