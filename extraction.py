@@ -44,19 +44,14 @@ class PCFG() :
                 lex_train[word][cat] = self.regles_lex[cat][word]
                 
         # s'occuper du lexique
-        # self.add_external_lexion(["lefff_5000.ftb4tags","lexique_cmpnd_TP.txt"],lex_train)            ########################## TODO : update
-        # self.add_unambiguous_lex()                                                                    ########################## idem : voir les résultats des autres groupes
+        self.add_external_lexicon(["lefff_5000.ftb4tags","lexique_cmpnd_TP.txt"],lex_train)
         
         probabilise_counts(self.regles)
         probabilise_counts(self.regles_lex)
-
-    def add_unambiguous_lex():
-        for cat in CATLIST:
-            self.regles_lex["__"+cat][cat] = 1
-            
-    def add_external_lexicon(lexiques,lex_train):
+        
+    def add_external_lexicon(self,lexiques,lex_train):
         for lexique in lexiques:
-            instream = open(lexique,"r",encoging="utf8")
+            instream = open(lexique,"r",encoding="latin1")
             for line in instream:
                 if not line.isspace():
                     items = line.split("\t")

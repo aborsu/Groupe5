@@ -22,6 +22,7 @@ DONE
   X Donner liste composés au groupe 3
     cat ftb6_2.mrg |grep -o -P "[^(^)]+ [^)^(]+"|grep -P "_"|tr " " "\t"|awk '{print $2 "\t" $1}' > composes.txt
   X Demander au groupe 1 des précisions
+  X Division en fichiers
   
 TODO
   - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
@@ -34,12 +35,14 @@ TODO
 
    remet: ({...}token ({...}token))
   - Modifs sur le ftb:
-    - entités nommées groupes 1 & 4
+    - entités nommées -> Sarah
+    - _NUM _URL -> augustin
+      _DATE du 1er groupe
   - Brancher avec parseur:
     - Réparer l'export
     X Mail Sagot
-    - Branchement
-    - Evaluation
+    - Branchement -> Max
+    - Evaluation 
   - Optimisation/relecture code
 
 INFOS GROUPES
@@ -73,6 +76,6 @@ INFOS GROUPES
       3. Etiquettent _NUM également les nombres simples en toute lettre: "deux", mais pas "un"
 
   GROUPE 4
-    - si mot inconnu : {}__CAT ils auront viré un /score
+    - si mot inconnu : {}forme__CAT ils auront viré un /score
     - {token_original}_TYPE, avec types in [ORG,PERS,GEO]
     - Ils nous fournissent leur lexique d'entités nommées pour modifier le ftb

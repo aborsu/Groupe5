@@ -3,7 +3,6 @@
 
 from re import split as resplit
 
-CATLIST = set(("ADJ", "ADV","NC","V","VINF","VPP"))
 NUMS = set(("un","deux","trois","quatre","cinq","six","sept","huit","neuf",
         "dix","onze","douze","treize","quatorze","quinze","seize",
         "vingt","trente","quarante","cinquante","soixante",
