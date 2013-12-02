@@ -1,0 +1,14 @@
+On exporte actuellement une grammaire binarisée + un lexique au format indiqué. On est en train de s'occuper de discuter avec les autres groupes pour adapter finement le FTB et nos infos de parsing à leur output. En attendant, nous voudrions au plus tôt utiliser le parseur SYNTAX.
+
+Nous l'avons installé le mac d'Augustin. Cependant la documentation du logiciel est obscure et nous aurions besoin de savoir comment utiliser le logiciel pour:
+    1- compiler notre grammaire probabiliste binarisée exportée au format indiqué.
+    2- Lancer le parseur entraîné sur un texte.
+
+En particulier, il nous manque les informations suivantes:
+    - Executables utiles pour les 2 tâches
+    - Options utiles
+    - Format d'entrée du texte à parser
+
+Peux-tu nous donner ces informations ? Nous sommes libres lundi matin prochain (et bien sur pendant le cours) s'il faut des explications en personne, mais nous préfèrerions pouvoir avancer le plus vite possible.
+
+Sarah.

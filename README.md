@@ -21,9 +21,9 @@ DONE
   X Lexiques externes
   X Donner liste composés au groupe 3
     cat ftb6_2.mrg |grep -o -P "[^(^)]+ [^)^(]+"|grep -P "_"|tr " " "\t"|awk '{print $2 "\t" $1}' > composes.txt
-
+  X Demander au groupe 1 des précisions
+  
 TODO
-  - Demander entités nommées au groupe 1 (+ _Num)
   - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
   
    {....1}token1 {....2}token2
@@ -34,16 +34,18 @@ TODO
 
    remet: ({...}token ({...}token))
   - Modifs sur le ftb:
-    - entités nommées
+    - entités nommées groupes 1 & 4
   - Brancher avec parseur:
     X Mail Sagot
     - Branchement
+    - Evaluation
   - Optimisation/relecture code
 
 INFOS GROUPES
   GROUPE 1
-    - Entités nommées type _URL. Demander précisions.
-    - Format pour _NUM ? DATE ?
+    - _NUM
+    - _DATE
+    - _URL
   GROUPE 2
     - liste de catégories :
        ADJ
