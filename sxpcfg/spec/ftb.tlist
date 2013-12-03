@@ -1,0 +1,38 @@
+/* ***************************************************************************************
+	This terminal symbol list has been extracted on Mon Dec  2 19:17:42 2013
+	by the SYNTAX(*) BNF processor running with the "-terminal" option
+	from the CFG "ftb" in BNF form last modified on Mon Dec  2 19:17:42 2013
+******************************************************************************************
+	(*) SYNTAX is a trademark of INRIA.
+****************************************************************************************** */
+
+
+	"prowh"	/* 1 */
+	"advwh"	/* 2 */
+	"det"	/* 3 */
+	"vimp"	/* 4 */
+	"p+d"	/* 5 */
+	"ponct"	/* 6 */
+	"vpp"	/* 7 */
+	"vpr"	/* 8 */
+	"pro"	/* 9 */
+	"nc"	/* 10 */
+	"i"	/* 11 */
+	"p+pro"	/* 12 */
+	"adv"	/* 13 */
+	"clo"	/* 14 */
+	"cc"	/* 15 */
+	"vinf"	/* 16 */
+	"p"	/* 17 */
+	"vs"	/* 18 */
+	"v"	/* 19 */
+	"cs"	/* 20 */
+	"et"	/* 21 */
+	"adj"	/* 22 */
+	"clr"	/* 23 */
+	"cls"	/* 24 */
+	"detwh"	/* 25 */
+	"pref"	/* 26 */
+	"prorel"	/* 27 */
+	"adjwh"	/* 28 */
+	"npp"	/* 29 */

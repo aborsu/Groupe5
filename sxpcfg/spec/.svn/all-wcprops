@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec
+END
+wsj7.lex
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec/wsj7.lex
+END
+default.lecl
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec/default.lecl
+END
+ab.bnf
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec/ab.bnf
+END
+default.recor
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec/default.recor
+END
+wsj7.bnf
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1600/alpage/trunk/syntax/examples/sxpcfg/spec/wsj7.bnf
+END

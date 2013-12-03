@@ -1,0 +1,14 @@
+# Dans le répertoire principal de Syntax-etc
+./configure
+make
+sudo make install
+
+# Dans syntax-etc../examples/sxpcfg
+aclocal -I /usr/local/share/aclocal/
+autoconf
+automake -af
+./configure
+make
+
+# Mettre les foo.lex et foo.bnf avec même nom dans spec
+make foo.lex.out        # compile la grammaire
