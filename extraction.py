@@ -13,6 +13,7 @@ class PCFG() :
         self.term = set()
         self.regles = defaultdict(lambda : defaultdict(float))                  # LH : RH : proba
         self.regles_lex = defaultdict(lambda : defaultdict(float))           # cat : mot : proba
+        self.axiom = None
         
     def makerule(self,tree):
         if len(tree.subtrees) == 1 and tree.subtrees[0].lexique :
@@ -33,8 +34,10 @@ class PCFG() :
                 occ = sum(dico[lev1][lev2] for lev2 in dico[lev1])
                 for lev2 in dico[lev1]:
                     dico[lev1][lev2] /= occ
-                
+        
+        self.axiom = forest[0].label
         for tree in forest:
+            assert tree.label == self.axiom
             self.makerule(tree)
 
         # mot: cat : compte
@@ -44,14 +47,14 @@ class PCFG() :
                 lex_train[word][cat] = self.regles_lex[cat][word]
                 
         # s'occuper du lexique
-        self.add_external_lexicon(["lefff_5000.ftb4tags","lexique_cmpnd_TP.txt"],lex_train)
+        self.add_external_lexicon({"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"},lex_train)
         
         probabilise_counts(self.regles)
         probabilise_counts(self.regles_lex)
         
     def add_external_lexicon(self,lexiques,lex_train):
         for lexique in lexiques:
-            instream = open(lexique,"r",encoding="latin1")
+            instream = open(lexique,"r",encoding=lexiques[lexique])
             for line in instream:
                 if not line.isspace():
                     items = line.split("\t")
@@ -62,7 +65,7 @@ class PCFG() :
                     
     def _export(self, dico, form_str, outname) :
         outstream = open(outname, "w", encoding = "utf8")
-        for level1 in dico :
+        for level1 in sorted(dico, key = lambda x : x != self.axiom) :
             for level2 in dico[level1] :
                 outstream.write(form_str(level1, level2, dico[level1][level2]))
         return outstream
@@ -79,7 +82,8 @@ class PCFG() :
 
     def export_lexicon(self, filename = "ftb.lex") :
         # "qui"	'prowh'	0.08064516129032257841
-        form_str = lambda y, x, z : '"' + x + """"\t'""" + y.lower() + "'\t" +str(z) + '\n'
+        #form_str = lambda y, x, z : '"' + x + """"\t'""" + y.lower() + "'\t" +str(z) + '\n'
+        form_str = lambda y, x, z : '"' + x + """"\t'""" + y.lower() + "'\n"
         self._export(self.regles_lex, form_str, filename).close()
 
     def binarise(self):
@@ -150,8 +154,8 @@ if __name__ == "__main__" :
     grammar.extract_grammar(ftb_trees)
     grammar.export_lexicon()
     grammar.export_grammar()
-    grammar.binarise()
-    grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
+    #grammar.binarise()
+    #grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
         
 
     result_trees = compile_trees("result.txt")
