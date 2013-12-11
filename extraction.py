@@ -87,9 +87,9 @@ class PCFG() :
         self._export(self.regles_lex, form_str, filename).close()
 
     def binarise(self):
-        for head in self.regles.copy().keys():
-            for rule in self.regles[head].copy().keys():
-                if len(rule.split( )) == 1 and rule not in self.term:
+        for head in self.regles.copy() :
+            for rule in self.regles[head].copy() :
+                if len(rule.split(" ")) == 1 and rule not in self.term:
 
                     #Ajoute une rêgle non terminale A:B
                     new_rule = ":".join([head,rule])
@@ -105,20 +105,18 @@ class PCFG() :
                             #Augmente la probabilité pour compenser la supression de A -> B
                             for temp_right in self.regles[temp_left]:
                                 self.regles[temp_left][temp_right] /= (1- p1)
-                            continue
                     
-                    for temp_left in self.regles.copy().keys():
+                    for temp_left in self.regles.copy() :
                         #Pour toute production de B
                         if temp_left == rule:
                             for temp_right in self.regles[temp_left]:
-                                if head in temp_right: print("erreur, ",head,"est réécris par ",rule)
+                                if head in temp_right: print("erreur, ",head,"est réécrit par ",rule)
                                 #Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
                                 self.regles[new_rule][temp_right]=self.regles[temp_left][temp_right]
 
                     for temp_left in self.regles:
-                        print("Je suis ici !")
                         #Pour toutes les autres rêgles de productions C
-                        for temp_right in self.regles[temp_left].copy().keys():
+                        for temp_right in self.regles[temp_left].copy() :
                             #Qui contiennent la rêgle A dans leur réécriture.C -x A y
                             if head in temp_right.split( ):
                                 #Crée une nouvelle rêgle se réécrivant C -> x A:B y
@@ -126,8 +124,8 @@ class PCFG() :
                                 #Modifie les probabilités des rêgles contenant A pour en retirer la possibilité de A -> B
                                 self.regles[temp_left][temp_right] *= (1-p1)
 
-        for head in self.regles.copy().keys():
-            for rule in self.regles[head].keys():
+        for head in self.regles.copy() :
+            for rule in self.regles[head] :
                 if len(rule.split( )) > 2:
                     A = rule.split( )
                     B = A.pop(len(A)-1)
