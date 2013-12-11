@@ -104,34 +104,40 @@ def extract(phrase) :
 
 def debinarise(maintree):
     """
-    Prend une phrase sous forme d'arbre binaire et applatis l'arbre (arbre n-aire).
+    Prend une phrase sous forme d'arbre binaire et applatit l'arbre (arbre n-aire).
     """
 
     def get_subtrees(tree,x):
         """
         Permet d'obtenir l'ensemble des noeuds qu'il faut applatir lorsqu'un noeud combiné est détecté.
-        tree est le noeud dans lequel il faut aller chercher les sous-noeud à applatir.
-        x = nombre de noeud qui ont été combinés.
+        tree est le noeud dans lequel il faut aller chercher les sous-noeuds à applatir.
+        x = nombre de noeuds qui ont été combinés.
         """
-        liste = tree.subtrees #Liste des soud noeuds du noeud (Toujours 2 puisque l'arbre est binaire.)
+        liste = tree.subtrees #Liste des sous noeuds du noeud (Toujours 2 puisque l'arbre est binaire.)
         list_of_subtrees.insert(0,liste[1]) #Le deuxième noeud est récupéré et envoyé dans la liste de réponse
+        #list_of_subtrees[x] = liste[1]
         if x>2:
             get_subtrees(liste[0],x-1)      #S'il reste plus de deux noeuds à récupérer, on regarde à l'intérieur du premier noeud pour 1 noeud de moins.
         else:
             list_of_subtrees.insert(0,liste[0]) #Sinon on prend le premier des deux noeuds et on l'envoye en première position de la liste de réponses.
-        pass
+            
     
     #pour chaque 
     for i,tree in enumerate(maintree.subtrees):
+        
         if tree.lexique: #Si on trouve un noeud lexique on passe.
             continue
 
         elif "-" in tree.label:                             #Si on trouve un noeud composé
             list_of_subtrees = []                           #initialise une liste de sous-noeuds
+            ## Initialiser la liste à la bonne longueur (len(tree.label.split("-")))
+            # x = len(tree.label.split("-"))
+            # list_of_subtrees = [None] * x
             get_subtrees(tree,len(tree.label.split("-")))   #Remplis la liste de sous-noeuds d'autants de noeuds qu'il y a de labels dans le noeud composé.
             for j,subtree in enumerate(list_of_subtrees):   #Pour chacun des nouvaux noeuds
                 subtree.parent=maintree                     #On modifie son parent pour qu'il soit le noeud au dessus du noeud composé.
                 if j == 0:                                  #Si il s'ajit du premier noeud, 
+                    # sortir le if de la boucle
                     maintree.subtrees[i] = subtree          #on remplace le noeud composé
                 else:                                       #Sinon
                     maintree.subtrees.insert(i+j,subtree)   #On insère le noeud à la place
