@@ -47,7 +47,8 @@ class PCFG() :
                 lex_train[word][cat] = self.regles_lex[cat][word]
                 
         # s'occuper du lexique
-        self.add_external_lexicon({"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"},lex_train)
+        self.add_external_lexicon(LEXIQUES_EXTERNES,lex_train)
+        self.add_named_entities()
         
         probabilise_counts(self.regles)
         probabilise_counts(self.regles_lex)
@@ -59,10 +60,18 @@ class PCFG() :
                 if not line.isspace():
                     items = line.split("\t")
                     word,cat = items[0:2]
-                    word.replace(" ","_")
+                    if "__" in word:
+                        word_manual_cat = word.split("__")
+                        word = word_manual_cat[0]
+                    word = word.replace(" ","_")
                     if (word in lex_train and cat not in lex_train[word]) or not word in lex_train:
                         self.regles_lex[cat][word] = 1
-                    
+                        
+    def add_named_entities(self):
+        for tag in TAGGED_WORDS:
+            for cat in TAGGED_WORDS[tag]:
+                self.regles_lex[cat][tag] = 1
+        
     def _export(self, dico, form_str, outname) :
         outstream = open(outname, "w", encoding = "utf8")
         for level1 in sorted(dico, key = lambda x : x != self.axiom) :
@@ -147,15 +156,19 @@ if __name__ == "__main__" :
     #print(test)
     #print(result)
     
+    print("Construction des arbres")
     ftb_trees = compile_trees("ftb6_2.mrg")
     grammar = PCFG()
+    print("Extraction de la grammaire")
     grammar.extract_grammar(ftb_trees)
+    print("Export de la grammaire")
     grammar.export_lexicon()
     grammar.export_grammar()
     #grammar.binarise()
     #grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
         
 
+    print("Binarisation de la grammaire")
     result_trees = compile_trees("result.txt")
     for tree in result_trees:
         debinarise(tree)

@@ -15,7 +15,7 @@ DONE
   X Mail aux groupes
   X Installer parseur
   X Train/test
-      - train.txt (découpage arboré)
+      0 train.txt (découpage arboré)
       - test.txt (découpage arboré)
       - test_input.txt (découpage non arboré)
   X Lexiques externes
@@ -23,32 +23,18 @@ DONE
     cat ftb6_2.mrg |grep -o -P "[^(^)]+ [^)^(]+"|grep -P "_"|tr " " "\t"|awk '{print $2 "\t" $1}' > composes.txt
   X Demander au groupe 1 des précisions
   X Division en fichiers
-  
-TODO
-  - Faire un lecteur de texte au format du groupe 4 qui réécrit les infos après.
-  
-   {....1}token1 {....2}token2
-
-   parse: token1 token2
-
-   resultat: (token1 (token2))
-
-   remet: ({...}token ({...}token))
-  - Modifs sur le ftb:
-    - entités nommées -> Sarah
-    - _NUM _URL -> augustin
-      _DATE du 1er groupe
-  - Brancher avec parseur:
-    - Réparer l'export
+  X Optimisation/relecture code
+  X Modifs sur le lexique: Sarah Done
+  X Brancher avec parseur:
+    X Réparer l'export
     X Mail Sagot
-    - Branchement -> Max
-    - Evaluation 
-  - Optimisation/relecture code
-  
-  - Format : 
-        enlever les probabilités dans l'export du lexique
-        mettre un attribut axiome dans la PCFG
-        mettre les règles de LHS axiom en tête du fichier exporté
+    X Commandes:
+      -m nf
+      -n 1 -pnt -string
+
+  TODO :
+  - Insérer la commande dans le main de extraction.
+  - Tester avec les autres.
 
 INFOS GROUPES
   GROUPE 1

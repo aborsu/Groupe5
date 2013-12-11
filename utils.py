@@ -8,8 +8,22 @@ NUMS = set(("un","deux","trois","quatre","cinq","six","sept","huit","neuf",
         "vingt","trente","quarante","cinquante","soixante",
         "cent","mille","millions","milliards","billions"))
 EXCEPT_NUM = set(("un",))
+LEXIQUES_EXTERNES = {"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"}
+TAGGED_WORDS = {"_ORG":["NPP"],
+                "_PERS":["NPP"],
+                "_URL":["NPP"],
+                "_GEO":["NPP"],
+                "_DATE":["NPP","NC"], # Parfois un NP entier, parfois le + _date
+                "_NUM":[] #complété selon train
+                }
 
-
+def isnumber(word):
+    nums = word.split(",")
+    for num in nums:
+        if not word.isnumeric():
+            return False
+    return True
+    
 def isnumword(word):
     splitted_words = resplit('[ \-_]',word)
     if len(splitted_words) == 1 and splitted_words[0] in EXCEPT_NUM:
@@ -18,3 +32,4 @@ def isnumword(word):
         if word not in NUMS:
             return False
     return True
+

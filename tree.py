@@ -82,8 +82,9 @@ def extract(phrase) :
                 if first_lexical and lexical and parent != "NPP":
                     first_lexical = False
                     node.word = label[0].lower()+label[1:]
-                if label.isnumeric() or isnumword(label) :
-                    node.word = "_NUM"     # DEMANDER A GROUPE1
+                # On ajoute _NUM pour toutes les categories pertinentes
+                if isnumber(label) or isnumword(label) :
+                    TAGGED_WORDS["_NUM"].append(parent.word)
             node.parent = parent
             if parent:
                 parent.subtrees.append(node)
