@@ -63,7 +63,7 @@ class PCFG() :
                     if "__" in word:
                         word_manual_cat = word.split("__")
                         word = word_manual_cat[0]
-                    word = word.replace(" ","_")
+                    word = word.replace("_-_","_")replace(" ","_")
                     if (word in lex_train and cat not in lex_train[word]) or not word in lex_train:
                         self.regles_lex[cat][word] = 1
                         
