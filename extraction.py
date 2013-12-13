@@ -24,7 +24,8 @@ class PCFG() :
         else:
             self.non_term.add(tree.word)
             RH = " ".join(son.word for son in tree.subtrees)
-            self.regles[tree.word][RH] += 1.
+            if RH != tree.word: # Corrige les productions erronnées du corpus type X -> X
+                self.regles[tree.word][RH] += 1.
             for son in tree.subtrees :
                 self.makerule(son)
         
@@ -45,7 +46,7 @@ class PCFG() :
         for cat in self.regles_lex :
             for word in self.regles_lex[cat] :
                 lex_train[word][cat] = self.regles_lex[cat][word]
-                
+
         # s'occuper du lexique
         self.add_external_lexicon(lexiques,lex_train)
         self.add_named_entities()
@@ -119,7 +120,7 @@ class PCFG() :
                         #Pour toute production de B
                         if temp_left == rule:
                             for temp_right in self.regles[temp_left]:
-                                if head in temp_right: print("erreur, ",head,"est réécrit par ",rule)
+                                if head == temp_right: print("erreur, ",head,"est réécrit par ",temp_right)
                                 #Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
                                 self.regles[new_rule][temp_right]=self.regles[temp_left][temp_right]
 
@@ -145,4 +146,5 @@ class PCFG() :
                         nouveau2 = "-".join(A)
                         self.regles[nouveau] = { " ".join([nouveau2,B]): 1 }
                         nouveau = nouveau2
+
 
