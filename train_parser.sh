@@ -14,7 +14,7 @@
 #   parseur.sh (vous êtes ici)
 #   une installation de SYNTAX
 
-python3 main.py -t ftb6_2.mrg -l "lefff_5000.ftb4tags" "utf8" -l "lexique_cmpnd_TP.txt" "latin1" -b
+python3 main.py -t ftb6_2.mrg -l "lefff_5000.ftb4tags" "utf8" -l "lexique_cmpnd_TP.txt" "latin1" 
 cp ftb.lex "$1spec/"
 cp ftb.bnf "$1spec/"
 cd $1
