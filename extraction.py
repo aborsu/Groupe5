@@ -164,14 +164,17 @@ if __name__ == "__main__" :
     print("Export de la grammaire")
     grammar.export_lexicon()
     grammar.export_grammar()
+
+    #print("Binarisation de la grammaire")
     #grammar.binarise()
     #grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
         
 
-    print("Binarisation de la grammaire")
-    result_trees = compile_trees("result.txt")
-    for tree in result_trees:
-        debinarise(tree)
+    #print("Debinarisation de la grammaire")
+    #Ne fonctionne pas car pas encore de fichier result.txt
+    # result_trees = compile_trees("result.txt")
+    # for tree in result_trees:
+    #     debinarise(tree)
 
     # result_trees = [ arbres dans l'ordre du fichier result.txt]
     # for tree in result_trees:

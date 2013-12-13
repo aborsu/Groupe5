@@ -31,7 +31,7 @@ class Tree() :
         return stringtree
 
 def compile_trees(filename) :
-    instream = open("ftb6_2.mrg", "r", encoding = "utf8")
+    instream = open(filename, "r", encoding = "utf8")
     phrase = instream.readline()
     ftb_trees = []
     
