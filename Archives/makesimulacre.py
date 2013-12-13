@@ -28,9 +28,9 @@ def main():
     instream = open("ftb_test.txt", "r", encoding = "utf8")
     outstream = open("ftb_test_accolades.txt", "w", encoding = "utf8")
     for phrase in instream:
-        listph = phrase.split(" ")
+        listph = phrase[:-1].split(" ")
         ph = [ "{"+str(num)+" "+word+"}"+word for num,word in enumerate(listph)]
-        outstream.write(" ".join(ph))
+        outstream.write(" ".join(ph) + "\n")
 
 if __name__ == '__main__':
 	main()
