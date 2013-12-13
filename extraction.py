@@ -28,7 +28,7 @@ class PCFG() :
             for son in tree.subtrees :
                 self.makerule(son)
         
-    def extract_grammar(self,forest):
+    def extract_grammar(self,forest,lexiques):
         def probabilise_counts(dico):
             for lev1 in dico:
                 occ = sum(dico[lev1][lev2] for lev2 in dico[lev1])
@@ -47,7 +47,7 @@ class PCFG() :
                 lex_train[word][cat] = self.regles_lex[cat][word]
                 
         # s'occuper du lexique
-        self.add_external_lexicon(LEXIQUES_EXTERNES,lex_train)
+        self.add_external_lexicon(lexiques,lex_train)
         self.add_named_entities()
         
         probabilise_counts(self.regles)
@@ -146,49 +146,3 @@ class PCFG() :
                         self.regles[nouveau] = { " ".join([nouveau2,B]): 1 }
                         nouveau = nouveau2
 
-
-
-if __name__ == "__main__" :
-    
-    #test = "( (SENT (VN (CLS Nous) (V prions)) (NP (DET les) (NC cinéastes) (COORD (CC et) (NP (ADJ tous) (DET nos) (NC lecteurs)))) (PP (P de) (VPinf (ADV bien) (VN (VINF vouloir)) (VPinf (VN (CLO nous) (CLO en) (VINF excuser))))) (PONCT .)))"
-    #result = extract(test)
-    #print ("result == test?",str(result)==test)
-    #print(test)
-    #print(result)
-    
-    print("Construction des arbres")
-    ftb_trees = compile_trees("ftb6_2.mrg")
-    grammar = PCFG()
-    print("Extraction de la grammaire")
-    grammar.extract_grammar(ftb_trees)
-    print("Export de la grammaire")
-    grammar.export_lexicon()
-    grammar.export_grammar()
-
-    #print("Binarisation de la grammaire")
-    #grammar.binarise()
-    #grammar.export_grammar(filename = "ftb_grammar_binarized.txt")
-        
-
-    #print("Debinarisation de la grammaire")
-    #Ne fonctionne pas car pas encore de fichier result.txt
-    # result_trees = compile_trees("result.txt")
-    # for tree in result_trees:
-    #     debinarise(tree)
-
-    # result_trees = [ arbres dans l'ordre du fichier result.txt]
-    # for tree in result_trees:
-    #       faire un traitement
-    # Arbre:
-    #       noeud axiome
-                #self.parent = None
-                #self.axiome = True
-                #self.label = texte: NP, "pierre"
-                #self.lexique = False
-                #self.subtrees = [ FILS ]
-    # si le label contient "-", faire des machins
-    # NOTE: les arbres sont des structures chaînées
-    # Si tu fais:
-    # fluxout = open(...)
-    # for tree in result_trees
-    #   fluxout.write(str(tree)+\n)

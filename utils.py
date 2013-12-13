@@ -3,12 +3,12 @@
 
 from re import split as resplit
 
+
 NUMS = set(("un","deux","trois","quatre","cinq","six","sept","huit","neuf",
         "dix","onze","douze","treize","quatorze","quinze","seize",
         "vingt","trente","quarante","cinquante","soixante",
         "cent","mille","millions","milliards","billions"))
 EXCEPT_NUM = set(("un",))
-LEXIQUES_EXTERNES = {"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"}
 TAGGED_WORDS = {"_ORG":["NPP"],
                 "_PERS":["NPP"],
                 "_URL":["NPP"],
