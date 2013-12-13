@@ -78,8 +78,10 @@ class PCFG() :
         for level1 in sorted(dico, key = lambda x : x != self.axiom) :
             for level2 in dico[level1] :
                 if level2 == "\"":
-                    level2 = "\\\""
-                outstream.write(form_str(level1, level2, dico[level1][level2]))
+                    rhs = "\\\""
+                else:
+                    rhs = level2
+                outstream.write(form_str(level1, rhs, dico[level1][level2]))
         return outstream
         
     
