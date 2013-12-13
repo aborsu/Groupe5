@@ -1,11 +1,36 @@
 
 ************** 1st best tree **************
-293/298:<SENT[1..6]> 	= <NP[1..3]> <VN[3..4]> <NP[4..6]> ; total weight=-5.223329
+544/192:<SENT[1..7]> 	= <NP[1..3]> <VN[3..4]> <NP[4..6]> <PONCT[6..7]> ; total weight=-3.560571
 10/2108:<NP[1..3]> 	= <DET[1..2]> <NC[2..3]> ; total weight=-0.780505
 1/2639:<DET[1..2]> 	= "Le__det/det"[1..2] ; total weight=0.000000
 7/2646:<NC[2..3]> 	= "chat__nc/nc"[2..3] ; total weight=0.000000
-29/1634:<VN[3..4]> 	= <V[3..4]> ; total weight=-0.570652
-27/2655:<V[3..4]> 	= "mange__v/v"[3..4] ; total weight=0.000000
-132/2108:<NP[4..6]> 	= <DET[4..5]> <NC[5..6]> ; total weight=-0.780505
-58/2639:<DET[4..5]> 	= "une__det/det"[4..5] ; total weight=0.000000
-126/2646:<NC[5..6]> 	= "pomme__nc/nc"[5..6] ; total weight=0.000000
+32/1634:<VN[3..4]> 	= <V[3..4]> ; total weight=-0.570652
+30/2655:<V[3..4]> 	= "mange__v/v"[3..4] ; total weight=0.000000
+165/2108:<NP[4..6]> 	= <DET[4..5]> <NC[5..6]> ; total weight=-0.780505
+75/2639:<DET[4..5]> 	= "une__det/det"[4..5] ; total weight=0.000000
+159/2646:<NC[5..6]> 	= "pomme__nc/nc"[5..6] ; total weight=0.000000
+512/2642:<PONCT[6..7]> 	= ".__ponct/ponct"[6..7] ; total weight=0.000000
+
+************** 1st best tree **************
+609/192:<SENT[1..7]> 	= <NP[1..3]> <VN[3..4]> <NP[4..6]> <PONCT[6..7]> ; total weight=-3.560571
+13/2108:<NP[1..3]> 	= <DET[1..2]> <NC[2..3]> ; total weight=-0.780505
+1/2639:<DET[1..2]> 	= "les__det/det"[1..2] ; total weight=0.000000
+9/2646:<NC[2..3]> 	= "ministres__nc/nc"[2..3] ; total weight=0.000000
+33/1634:<VN[3..4]> 	= <V[3..4]> ; total weight=-0.570652
+32/2655:<V[3..4]> 	= "parlent__v/v"[3..4] ; total weight=0.000000
+159/2108:<NP[4..6]> 	= <DET[4..5]> <NC[5..6]> ; total weight=-0.780505
+76/2639:<DET[4..5]> 	= "de__det/det"[4..5] ; total weight=0.000000
+154/2646:<NC[5..6]> 	= "politique__nc/nc"[5..6] ; total weight=0.000000
+567/2642:<PONCT[6..7]> 	= ".__ponct/ponct"[6..7] ; total weight=0.000000
+
+************** 1st best tree **************
+654/192:<SENT[1..7]> 	= <NP[1..3]> <VN[3..4]> <NP[4..6]> <PONCT[6..7]> ; total weight=-3.560571
+13/2108:<NP[1..3]> 	= <DET[1..2]> <NC[2..3]> ; total weight=-0.780505
+1/2639:<DET[1..2]> 	= "les__det/det"[1..2] ; total weight=0.000000
+9/2646:<NC[2..3]> 	= "ministres__nc/nc"[2..3] ; total weight=0.000000
+32/1634:<VN[3..4]> 	= <V[3..4]> ; total weight=-0.570652
+31/2655:<V[3..4]> 	= "{émancipent} __v__v/v"[3..4] ; total weight=0.000000
+159/2108:<NP[4..6]> 	= <DET[4..5]> <NC[5..6]> ; total weight=-0.780505
+74/2639:<DET[4..5]> 	= "le__det/det"[4..5] ; total weight=0.000000
+155/2646:<NC[5..6]> 	= "chat__nc/nc"[5..6] ; total weight=0.000000
+609/2642:<PONCT[6..7]> 	= ".__ponct/ponct"[6..7] ; total weight=0.000000

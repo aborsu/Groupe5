@@ -13,8 +13,9 @@
 #   tree.py
 #   parseur.sh (vous êtes ici)
 #   une installation de SYNTAX
+
 cp $2 $1
 cd $1
-./ftb.lex.out -n 1 -pnt -string "$2" > output_groupe5.txt
+./ftb.lex.out -n 1 -pnt "$2" > output_groupe5.txt
 cd -
 cp "$1output_groupe5.txt" ./
