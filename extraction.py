@@ -100,55 +100,97 @@ class PCFG() :
         form_str = lambda y, x, z : '"' + x + """"\t'""" + y.lower() + "'\n"
         self._export(self.regles_lex, form_str, filename).close()
 
-    def binarise(self):
-        for head in self.regles.copy() :
-            for rule in self.regles[head].copy() :
-                if len(rule.split(" ")) == 1 and rule not in self.term:
+    def export_grammar_bin(self, filename = "ftb_bin.bnf") :
+        form_str = lambda x,y,z : "<" + x + "> = <" + y.replace(" ", "> <") + "> ; " + str(z) + "\n"
+        # <SENT> = <NP> <PONCT> <VPinf> <PONCT> <VN> <PP> <NP> <PONCT> ; 0.00025239777889954568
+        outstream = self._export(self.regles, form_str, filename)
+        term_str = lambda x : "<" + x + "> = \"" + x.lower() +"\" ; 1.0\n"
+        for term in self.term :
+            outstream.write(term_str(term))
+        outstream.close()
 
+    def _find_unary_rules(self):
+        rules_to_be_replaced = []
+        for head in self.regles:
+            for rule in self.regles[head] :
+                if len(rule.split(" ")) == 1 and rule not in self.term:
                     #Ajoute une rêgle non terminale A:B
                     new_rule = ":".join([head,rule])
-                    p1 = self.regles[head][rule]
+                    p = self.regles[head][rule]
+                    rules_to_be_replaced.append([new_rule,head,rule,p])
+        return rules_to_be_replaced
 
-                    #Retire la règle originelle
-                    del self.regles[head][rule]
+    def _insert_new_combined_rule(self,mod,old_head,warning,p1):
+        nouvelles_regles = defaultdict(lambda : defaultdict(float)) 
+        for head in self.regles:
+            for rule in self.regles[head]:
+                bag = rule.split(" ")
+                if old_head in bag:
+                    p2 = self.regles[head][rule]
+                    new_rule = " ".join([mod if x==old_head else x for x in bag])
+                    nouvelles_regles[head][new_rule] = p1 * p2
+                    self.regles[head][rule] = (1-p1) * p2
+        return nouvelles_regles
 
-                    #Modifie la grammaire
-                    for temp_left in self.regles:
-                        #Pour toute production de A
-                        if temp_left == head:
-                            #Augmente la probabilité pour compenser la supression de A -> B
-                            for temp_right in self.regles[temp_left]:
-                                self.regles[temp_left][temp_right] /= (1- p1)
-                    
-                    for temp_left in self.regles.copy() :
-                        #Pour toute production de B
-                        if temp_left == rule:
-                            for temp_right in self.regles[temp_left]:
-                                if head == temp_right: print("erreur, ",head,"est réécrit par ",temp_right)
-                                #Assigne à la nouvelle rêgle les mêmes rêgles de réécriture et les mêmes probabilités que celles de B
-                                self.regles[new_rule][temp_right]=self.regles[temp_left][temp_right]
-
-                    for temp_left in self.regles:
-                        #Pour toutes les autres rêgles de productions C
-                        for temp_right in self.regles[temp_left].copy() :
-                            #Qui contiennent la rêgle A dans leur réécriture.C -x A y
-                            if head in temp_right.split( ):
-                                #Crée une nouvelle rêgle se réécrivant C -> x A:B y
-                                self.regles[temp_left][" ".join([new_rule if x==head else x for x in temp_right.split( )])] = p1 * self.regles[temp_left][temp_right]
-                                #Modifie les probabilités des rêgles contenant A pour en retirer la possibilité de A -> B
-                                self.regles[temp_left][temp_right] *= (1-p1)
-
-        for head in self.regles.copy() :
-            for rule in self.regles[head] :
-                if len(rule.split( )) > 2:
-                    A = rule.split( )
-                    B = A.pop(len(A)-1)
-                    nouveau = "-".join(A)
-                    self.regles[head][" ".join([nouveau,B])] = self.regles[head].pop(rule)
-                    while len(A) > 1:
-                        B = A.pop(len(A)-1)
-                        nouveau2 = "-".join(A)
-                        self.regles[nouveau] = { " ".join([nouveau2,B]): 1 }
+    def _find_morethan2ary_rules(self):
+        nouvelles_regles = defaultdict(lambda : defaultdict(float)) 
+        rules_to_be_removed = []
+        for h in self.regles:
+            for r in self.regles[h] :
+                if len(r.split( )) > 2:
+                    rules_to_be_removed.append([h,r])
+                    a = r.split( )
+                    b = a.pop(len(a)-1)
+                    nouveau = "-".join(a)
+                    nouvelles_regles[h][" ".join([nouveau,b])] = self.regles[h][r]
+                    while len(a) > 1:
+                        b = a.pop(len(a)-1)
+                        nouveau2 = "-".join(a)
+                        nouvelles_regles[nouveau][" ".join([nouveau2,b])] = 1
                         nouveau = nouveau2
+        return nouvelles_regles, rules_to_be_removed
+
+    def update(self,dico2):
+        for h in dico2:
+            for r in dico2[h]:
+                self.regles[h][r] = dico2[h][r]
 
 
+    def binarise(self):        
+        #1 Trouve toutes les rêgles unaires non terminales de la grammaire qui doivent être remplacée. 
+        rtbr = self._find_unary_rules()
+
+        #2 Enlêve les originaux
+        for r in rtbr:
+            del self.regles[r[1]][r[2]]
+
+        #3 Crée des rêgles faisant appel à la nouvelle rêgle et met à jour le dictionnaire
+        for rule in rtbr:
+            nouvelles_regles = self._insert_new_combined_rule(rule[0],rule[1],rule[2],rule[3])
+            self.update(nouvelles_regles)
+
+        #4 Modifie les probabilités des rêgles ayant la même tête
+        for rule in rtbr:
+            for rule2 in self.regles[rule[1]]:
+                self.regles[rule[1]][rule2] *=(1-rule[3])
+
+        #5 Binarise les rêgles plus que 2aires
+        nouvelles_regles, rtbr = self._find_morethan2ary_rules()
+        self.update(nouvelles_regles)
+
+        for r in rtbr:
+            del self.regles[r[0]][r[1]]
+
+# lexiques = {"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"}
+# print("Construction des arbres")
+# ftb_trees = compile_trees("ftb6_2.mrg")
+# grammar = PCFG()
+# print("Extraction de la grammaire")
+# grammar.extract_grammar(ftb_trees,lexiques)
+# print("Export de la grammaire")
+# grammar.export_lexicon()
+# grammar.export_grammar()
+# print("Binarise la grammaire")
+# grammar.binarise()  
+# print("Export de la grammaire binnarisée")
+# grammar.export_grammar(filename = 'ftb_bin.bnf')
