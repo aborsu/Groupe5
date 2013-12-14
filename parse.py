@@ -8,6 +8,20 @@ def parse(sentence,grammar,lexique):
 	L'algorithme prend une phrase, une grammaire et un lexique en entrée et retourne un arbre de probabilité maximale.
 	"""
 
+	def add_to_table(tableau,prediction):
+		"""
+		Vérifi qu'un élément n'est pas dans la table avant de l'ajouter
+		"""
+		key1 = prediction.head
+		key2 = prediction.wants
+		if len(tableau[key1][key2]) > 0:
+			for element in tableau[key1][key2]:
+				if element.name == prediction.name:
+					return
+			tableau[key1][key2].append(prediction)
+		else:
+			tableau[key1][key2] = [prediction]
+
 	def predict(tableau,key1,key2):
 		"""
 		Cette fonction effectue l'étape de prédiction de l'algorithme d'Earley.
@@ -22,26 +36,31 @@ def parse(sentence,grammar,lexique):
 			# Crée une nouvelle prédiction
 			new_prediction = prediction(key2,[],key3.split(' '),i,key1,grammar[key2][key3])
 			key4 = new_prediction.wants
-			
-			#Regarde si la prédiction est déjà dans la grammaire
-			for element in tableau[key2][key4]:
-				#S'il s'agit de la même prédiction alors aucune nécessité de garder les deux
-				if element.name == new_prediction.name:
-					continue
-				
-				#Il peut y avoir d'autres prédiction qui ont la même tête et veulent le même élément suivant mais ne sont pas identique.
-				else:
-				#On les rajoute aux mêmes endroit
-					tableau[key2][key4].append(new_prediction)
-			
-			#Si aucune rêgle n'existait à cet endroit on la rajoute
-			if len(tableau[key2][key4]) == 0:
-				tableau[key2][key4] = [new_prediction]
+
+			#Ajoute à la table
+			add_to_table(tableau,new_prediction)
 
 			#Si key 4 est dans la grammaire (est non terminal, on continue les prédictions)
 			if key4 in grammar:
 				predict(tableau,key2,key4)
 
+	def shift(tableau1,tableau2,pos):
+		mot = sentence[i]
+		classe = lexique[mot]
+
+		for key1 in tableau1:
+			for element in tableau1[key1][classe]:
+				#fait un nouvel élément
+				head, before_dot, after_dot, beginning, father,p,sons = element.suivant()
+				terminal = prediction(classe,sentence[i],[],i,key1,1)
+				terminal.lexique = sentence[i]
+				if sons == None:
+					sons = [terminal]
+				else:
+					sons.append(terminal)
+				new_prediction = prediction(head,before_dot,after_dot,beginning,father,p,sons)
+
+				add_to_table(tableau2,new_prediction)
 
 	def complete(tableau,element):
 		#Si l'élément n'a pas de père (il s'agit du noeud '$SENT') alors la complétion est finie.
@@ -53,34 +72,37 @@ def parse(sentence,grammar,lexique):
 			
 			#Déplace le dot
 			head, before_dot, after_dot, beginning, father,p,sons = father_el.suivant()
+			
 			# sons contient l'ensemble des fils d'un élément
 			if sons == None:
 				sons = [element]
 			else:
 				sons.append(element)
-			new_element = prediction(head,before_dot,after_dot,beginning,father,p*element.p,sons)
 			
-			#Rajoute la règle modifiée au tableau
-			if head in tableau:
-				if new_element.wants in tableau[head]:
-					for existing in tableau[head][new_element.wants]:
-						if existing.name == new_element.name:
-							pass
-					else:
-						tableau[head][new_element.wants].append(new_element)
-				else:
-					tableau[head][new_element.wants]=[new_element]
+			new_prediction = prediction(head,before_dot,after_dot,beginning,father,p*element.p,sons)
+			
+			add_to_table(tableau,new_prediction)
+
+			if new_prediction.wants == "fini":
+				complete(tableau,new_prediction)
+
+	def get_subtrees(elements):
+		result = []
+		for node in elements:
+			if node.sons == None :
+				tree = Tree(node.head,False)
+				lex = Tree(node.lexique,True)
+				tree.subtrees = [lex]
+				result.append(tree)
 			else:
-				tableau.update({head:{new_element.wants : [new_element]}})
-
-			#Si la rêgle est maintenant finie, on continue de compléter
-			if new_element.wants == "fini":
-				complete(tableau,new_element)
-						
+				tree = Tree(node.head,False)
+				tree.subtrees = get_subtrees(node.sons)
+				result.append(tree)
+		# for el in result:
+		# 	print(str(el))
+		return result
 	
-
-	#print("Verification")
-	#Prière rêgle permettant de produire une phrase
+	#Première rêgle permettant de produire une phrase
 	"""
 	Crée une rêgle mettant en rot
 	"""
@@ -102,83 +124,37 @@ def parse(sentence,grammar,lexique):
 		#Phase de prédiction
 		for key1 in tableaux[i].copy():
 			for key2 in tableaux[i][key1].keys():
-				if key2 in grammar:
-					predict(tableaux[i],key1,key2)
-		#Shift
-		j=i
-		i += 1
-		
-		#Imprime le tableau qui vient d'être fini
-		print("\nTableau ",j,":" )
-		print("ici")
-		print(lexique[sentence[j]], sentence[j])
-		for key1 in tableaux[j]:
-			for key2 in tableaux[j][key1]:			
-				#Tant qu'à parcourir le tableau autant en 1profiter pour initialiser le suivant
-				if key2 == lexique[sentence[j]]:
-					if key1 not in tableaux[i]:
-						tableaux[i][key1]={}
-					for element in tableaux[j][key1][key2]:
-						element.print()
-						head, before_dot, after_dot, beginning, father,p,sons = element.suivant()
-						lex = prediction(key2,sentence[j],[],j,key1,1)
-						lex.lexique = sentence[j]
-						if sons == None:
-							sons = [lex]
-						else:
-							sons.append(lex)
-						new_element = prediction(head,before_dot,after_dot,beginning,father,p,sons)
+				if key2 in grammar: predict(tableaux[i],key1,key2)
 
-						key3 = new_element.wants
-						if key3 in tableaux[i][key1]:
-							tableaux[i][key1][key3].append(new_element)
-						else:
-							tableaux[i][key1][key3] = [new_element]								
-				else:
-					for element in tableaux[j][key1][key2]:
-						element.print()
+		#Shift
+		shift(tableaux[i],tableaux[i+1],i)
+		i += 1
 
 		#Complétion
+		print(i)
 		for key1 in tableaux[i].copy():
 			if "fini" in tableaux[i][key1]:
 				for element in tableaux[i][key1]["fini"]:
 					complete(tableaux[i],element)
-		
-	print("\nTableau",i)
-	for key1 in tableaux[i]:
-		for key2 in tableaux[i][key1]:
-			for element in tableaux[i][key1][key2]:
-				element.print()
+	
+
+	for pos,tableau in enumerate(tableaux):
+		print("\nTableau",pos)
+		for key1 in tableau:
+			for key2 in tableau[key1]:
+				for element in tableau[key1][key2]:
+					element.print()
 
 	resultat = []
 	for element in tableaux[i]["SENT"]["fini"]:
 		sent = Tree("SENT",False)
 		sent.subtrees = get_subtrees(element.sons) 
 		resultat.append([sent,element.p])
-	return resultat
-
-def get_subtrees(elements):
-	result = []
-	for node in elements:
-		if node.sons == None :
-			tree = Tree(node.head,False)
-			lex = Tree(node.lexique,True)
-			tree.subtrees = [lex]
-			result.append(tree)
-		else:
-			tree = Tree(node.head,False)
-			tree.subtrees = get_subtrees(node.sons)
-			result.append(tree)
-	# for el in result:
-	# 	print(str(el))
-	return result
-
-
-	
+	return resultat	
 
 class prediction:
 	def __init__(self,head,before_dot,after_dot,beginning,father,p,sons=None):
-		self.name = [head,before_dot,after_dot]
+		self.name = [head,before_dot,after_dot,p]
 		self.head = self.name[0]
 		self.before_dot = self.name[1]
 		self.after_dot = self.name[2]
@@ -199,6 +175,9 @@ class prediction:
 		
 	def print(self):
 		print("".join(["[",str(self.beginning),"]",self.head," -> "," ".join(self.before_dot)," * "," ".join(self.after_dot)])," P = ",self.p)	
+
+
+
 
 
 if __name__ == "__main__":
