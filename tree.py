@@ -125,23 +125,16 @@ def debinarise(maintree):
             list_of_subtrees.append(liste[0])
         return list_of_subtrees
     
-    #pour chaque 
-    #print(maintree.subtrees)
+    #N-arize les arbres 
     for tree in maintree.subtrees:
-        #print("test",tree.label)
+        #Trouve les noeuds composés
         if "-" in tree.label:
-           # print("ici")
-            #Si on trouve un noeud composé
-            ## Initialiser la liste à la bonne longueur (len(tree.label.split("-")))
-            # x = len(tree.label.split("-"))
-            # list_of_subtrees = [None] * x
             list_of_subtrees = _get_subtrees(tree,len(tree.label.split("-")))   #Remplis la liste de sous-noeuds d'autants de noeuds qu'il y a de labels dans le noeud composé.
+            
+            #Premier noeud va remplacer le noeud composé, les autres sont insérés
             premier = list_of_subtrees.pop()
             premier.parent = maintree
             #ATTENTION Ceci ne fonctionne que si l'on a respecté le principe que les rêgles se binarise en agglutinant les éléments à gauches.
-            #print("problème")
-            #print(maintree.subtrees)
-            #print(premier)
             maintree.subtrees[0] = premier
             i=1 
             while len(list_of_subtrees) > 0:
@@ -150,6 +143,7 @@ def debinarise(maintree):
                 maintree.subtrees.insert(i,new_tree)   #On insère le noeud à la place
                 i+=1
 
+    #Unarize les arbres
     for i,tree in enumerate(maintree.subtrees):
         if ":" in tree.label:
             liste = tree.label.split(":")   #Split le noeud
