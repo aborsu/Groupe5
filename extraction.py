@@ -177,20 +177,4 @@ class PCFG() :
         #5 Binarise les rêgles plus que 2aires
         nouvelles_regles, rtbr = self._find_morethan2ary_rules()
         self.update(nouvelles_regles)
-
-        for r in rtbr:
-            del self.regles[r[0]][r[1]]
-
-# lexiques = {"lefff_5000.ftb4tags" : "utf8","lexique_cmpnd_TP.txt" : "latin1"}
-# print("Construction des arbres")
-# ftb_trees = compile_trees("ftb6_2.mrg")
-# grammar = PCFG()
-# print("Extraction de la grammaire")
-# grammar.extract_grammar(ftb_trees,lexiques)
-# print("Export de la grammaire")
-# grammar.export_lexicon()
-# grammar.export_grammar()
-# print("Binarise la grammaire")
-# grammar.binarise()  
-# print("Export de la grammaire binnarisée")
-# grammar.export_grammar(filename = 'ftb_bin.bnf')
+        

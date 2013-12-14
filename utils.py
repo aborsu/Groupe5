@@ -9,7 +9,8 @@ NUMS = set(("un","deux","trois","quatre","cinq","six","sept","huit","neuf",
         "vingt","trente","quarante","cinquante","soixante",
         "cent","mille","millions","milliards","billions"))
 EXCEPT_NUM = set(("un",))
-TAGGED_WORDS = {"_ORG":["NPP"],
+TAGGED_WORDS = {"_QUOTE":["PONCT"],
+                "_ORG":["NPP"],
                 "_PERS":["NPP"],
                 "_URL":["NPP"],
                 "_GEO":["NPP"],

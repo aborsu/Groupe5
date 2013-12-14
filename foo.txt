@@ -1,4 +1,4 @@
 le chat mange une pomme .
 les ministres parlent de politique .
 les ministres {émancipent}__v le chat .
-les ministres {émancipent}__v le chat .
+les ministres {émancipent}__nc le chat .
